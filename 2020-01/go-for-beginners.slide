@@ -1,0 +1,197 @@
+Go for beginners
+Golang Kiel Meetup #1
+28 Jan 2020
+
+Christopher Hlubek
+networkteam GmbH
+@hlubek
+
+* A look at the language and the ecosystem
+
+* Why Go?
+
+- Focus on simplicity
+- Consistent language and standard library
+- Fast build times
+- Great integrated tooling
+- Lightweight and fast _enough_ (C is still faster)
+- Easy deployment and cross compilation
+
+* Popular software built with Go
+
+- Docker
+- Kubernetes
+- etcd
+- Terraform
+- Minio
+- Hugo
+
+* The language
+
+* Hello world
+
+.play -edit go-for-beginners/hello_world.go
+.image https://media.giphy.com/media/Z3l1Oo5Ro9ZSw/giphy.gif 300 _
+
+* Packages
+
+* Package declaration
+
+`hello_world.go`
+
+.code go-for-beginners/hello_world.go HLpkg
+
+- Each file declares its package
+- Package `main` is used for runnable code
+
+* Folders are packages
+
+- All files in a folder are in the same package
+
+`strings/reverse.go`
+
+.code go-for-beginners/strings/reverse.go HLpkg
+
+`strings/upper.go`
+
+.code go-for-beginners/strings/upper.go HLpkg
+
+* Using packages
+
+`hello_world.go`
+
+.code go-for-beginners/hello_world.go HLimport
+
+- Imports standard library package `fmt`
+- All imports are explicit
+
+* Using external packages
+
+.play go-for-beginners/faker.go
+
+- Run "go get github.com/bxcodec/faker" to fetch package
+
+* Functions
+
+* Function declarations
+
+.code go-for-beginners/hello_world.go /START/,/END/
+
+.code go-for-beginners/funcs/fib.go /^func fib/,/^}/
+
+* Multiple return arguments
+
+.code go-for-beginners/funcs/multiple.go /^func do/,/^}/
+
+- _Very_ common pattern for returning optional errors
+
+* Built-in functions
+
+Luckily only a few!
+
+append()
+cap()
+close()
+copy()
+delete()
+len()
+make()
+new()
+panic()
+recover()
+
++ some more for complex numbers
+
+* Types
+
+* Simple
+
+*Numbers*
+
+.code go-for-beginners/types/simple.go /START NUM/,/END NUM/
+
+*Booleans*
+
+.code go-for-beginners/types/simple.go /START BOOL/,/END BOOL/
+
+*Strings*
+
+.code go-for-beginners/types/simple.go /START STRING/,/END STRING/
+
+Everything is UTF-8, yeah!
+
+* Arrays and Slices
+
+*Arrays*
+
+.code go-for-beginners/types/arrays.go /START ARRAY/,/END ARRAY/
+
+- fixed length
+
+*Slices*
+
+.code go-for-beginners/types/arrays.go /START SLICE/,/END SLICE/
+
+*Slice*expressions*
+
+.play go-for-beginners/types/arrays.go /START SLICE EXPR/,/END SLICE EXPR/
+
+* Structs
+
+* Struct literal
+
+.play go-for-beginners/types/structs.go /START LIT/,/END LIT/
+
+* Custom struct types
+
+.code go-for-beginners/types/structs.go /START TYPE/,/END TYPE/
+
+* Struct methods
+
+.code go-for-beginners/types/struct_methods.go /START/,/END/
+
+- `func` Declaration with additional receiver
+
+* Custom types
+
+.play go-for-beginners/types/custom_types.go /START/,/END/
+
+- Add methods for _any_ type!
+- Great for value objects and modeling
+
+* Functions
+
+.play go-for-beginners/types/functions.go /START/,/END/
+
+- Functions are values
+- Closures are supported
+
+* Concurrency
+
+* Go routines
+
+.play go-for-beginners/concurrency/goroutines.go /START/,/END/
+
+- Really easy to do something concurrently
+- Go scheduler handles thousands of goroutines
+
+* Coordination
+
+.play go-for-beginners/concurrency/coordination.go /START/,/END/
+
+* Channels
+
+.play go-for-beginners/concurrency/channels.go /START/,/END/
+
+- Send and receive blocks
+- Share data by communicating
+
+* A simple web server
+
+.play go-for-beginners/http/webserver.go
+
+- Standard library has great HTTP support
+
+* A simple web client
+
+.play go-for-beginners/http/webclient.go
