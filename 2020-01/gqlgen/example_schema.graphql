@@ -1,0 +1,28 @@
+// START EXAMPLE OMIT
+type Todo {
+  id: ID!
+  text: String!
+  done: Boolean!
+  user: User!
+}
+
+type User {
+  id: ID!
+  name: String!
+}
+
+type Query {
+  todos: [Todo!]!
+}
+// END EXAMPLE OMIT
+
+// START MUTATION OMIT
+input NewTodo {
+  text: String!
+  userId: String!
+}
+
+type Mutation {
+  createTodo(input: NewTodo!): Todo!
+}
+// END MUTATION OMIT

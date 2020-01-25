@@ -1,0 +1,5 @@
+mutation CreateTodo {
+  createTodo(input: {text: "Have fun at the meetup", userId: "c.hlubek"}) {
+    id
+  }
+}

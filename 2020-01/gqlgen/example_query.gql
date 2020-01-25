@@ -1,0 +1,10 @@
+query Todos {
+  todos {
+    id
+    text
+    user {
+      id
+      name
+    }
+  }
+}

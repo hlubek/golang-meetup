@@ -14,7 +14,7 @@ networkteam GmbH
 - Consistent language and standard library
 - Fast build times
 - Great integrated tooling
-- Lightweight and fast _enough_ (C is still faster)
+- Lightweight and _fast enough_ (C is still faster)
 - Easy deployment and cross compilation
 
 * Go values

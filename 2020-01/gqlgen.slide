@@ -1,0 +1,82 @@
+gqlgen
+Golang Kiel Meetup #1
+28 Jan 2020
+
+Christopher Hlubek
+networkteam GmbH
+@hlubek
+
+* Type-safe GraphQL APIs with Go
+
+* GraphQL primer
+
+- Fully typed APIs
+- Client can query over _fields_ as graph structure
+- Kind of RPC over HTTP
+- GQL as query language
+- Data is returned via JSON
+
+* GraphQL example
+
+*Schema*
+
+.code gqlgen/example_schema.graphql /START EXAMPLE/,/END EXAMPLE/
+
+- Queries are for _reading_
+
+* GraphQL example
+
+*Query*
+
+.code gqlgen/example_query.gql
+
+* GraphQL example
+
+*Schema*continued*
+
+.code gqlgen/example_schema.graphql /START MUTATION/,/END MUTATION/
+
+- Mutations are for _writing_
+
+* GraphQL example
+
+*Schema*continued*
+
+.code gqlgen/example_schema.graphql /START MUTATION/,/END MUTATION/
+
+- Mutations are for _writing_
+
+* GraphQL example
+
+*Mutation*
+
+.code gqlgen/example_mutation.gql
+
+* GraphQL with Go
+
+* gqlgen
+
+- Generate type-safe code from schema
+- Supports almost all GraphQL features
+
+.image gqlgen/gqlgen-features.png 450 _
+
+* Getting started
+
+`$`mkdir`gqlgen-todos;cd`gqlgen-todos`
+
+`$`go`mod`init`example/gqlgen-todos`
+
+Create `schema.graphql`
+
+`$`go`run`github.com/99designs/gqlgen`init`
+`Exec`"go`run`./server/server.go"`to`start`GraphQL`server`
+
+* Generated server
+
+.code gqlgen/generated/server.go /START/,/END/ HLresolver
+
+* Generated resolver
+
+.code gqlgen/generated/resolver.go /START/,/END/
+

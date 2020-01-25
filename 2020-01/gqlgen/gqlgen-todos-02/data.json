@@ -1,0 +1,16 @@
+{
+  "Todos": {
+    "TODO-1": {
+      "ID": "TODO-1",
+      "Text": "Start a new Todo app",
+      "Done": false,
+      "UserID": "USER-1"
+    }
+  },
+  "Users": {
+    "USER-1": {
+      "ID": "USER-1",
+      "Name": "Christopher"
+    }
+  }
+}
