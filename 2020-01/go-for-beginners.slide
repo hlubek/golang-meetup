@@ -17,6 +17,14 @@ networkteam GmbH
 - Lightweight and fast _enough_ (C is still faster)
 - Easy deployment and cross compilation
 
+* Go values
+
+- Simplicity
+- Easy to learn
+- Focus on idiomatic solutions
+- Solves software engineering problems
+
+
 * Popular software built with Go
 
 - Docker
@@ -69,7 +77,17 @@ networkteam GmbH
 
 .play go-for-beginners/faker.go
 
-- Run "go get github.com/bxcodec/faker" to fetch package
+- Run `go`get`github.com/bxcodec/faker` to fetch package
+
+* Visibility of code
+
+.code go-for-beginners/exports.go /START INTERNAL/,/END INTERNAL/
+
+- All _lowercase_ variables, functions and types are internal
+
+.code go-for-beginners/exports.go /START EXPORTED/,/END EXPORTED/
+
+- All _uppercase_ variables, functions and types are exported
 
 * Functions
 
@@ -136,6 +154,16 @@ Everything is UTF-8, yeah!
 
 .play go-for-beginners/types/arrays.go /START SLICE EXPR/,/END SLICE EXPR/
 
+* Maps
+
+.play go-for-beginners/types/maps.go /START/,/END/
+
+- Maps must be initialized with `make`!
+
+* Maps
+
+.play go-for-beginners/types/maps_access.go /START/,/END/
+
 * Structs
 
 * Struct literal
@@ -152,6 +180,18 @@ Everything is UTF-8, yeah!
 
 - `func` Declaration with additional receiver
 
+* Pointers
+
+.play go-for-beginners/types/pointers.go /START/,/END/
+
+What does it print?
+
+* Pointers
+
+.play go-for-beginners/types/pointers_struct.go /START/,/END/
+
+What does it print?
+
 * Custom types
 
 .play go-for-beginners/types/custom_types.go /START/,/END/
@@ -165,6 +205,36 @@ Everything is UTF-8, yeah!
 
 - Functions are values
 - Closures are supported
+
+* Interfaces
+
+.code go-for-beginners/types/interfaces.go /START INTERFACE/,/END INTERFACE/
+
+- Interfaces are usually defined in the package _using_ the type
+
+* Interfaces
+
+.play go-for-beginners/types/interfaces.go /START IMPL/,/END IMPL/
+
+- Types _implicitly_ implement an interface
+
+* Interfaces
+
+*Advantages*
+
+- No coupling between interface type and implementation!
+- Many generic / polymorphism problems can be solved with interfaces
+
+*Popular*interfaces*
+
+.code go-for-beginners/types/popular.go /START io.Reader/,/END io.Reader/
+.code go-for-beginners/types/popular.go /START io.Writer/,/END io.Writer/
+
+* Interfaces
+
+*Popular*interfaces*
+
+.code go-for-beginners/types/popular.go /START sort.Interface/,/END sort.Interface/
 
 * Concurrency
 
@@ -195,3 +265,85 @@ Everything is UTF-8, yeah!
 * A simple web client
 
 .play go-for-beginners/http/webclient.go
+
+* Tooling
+
+* Build
+
+*Build*single*file*
+
+`go`build`cmd.go`-o`prog_name`
+
+*Build*package*
+
+`go`build`./cli/ctl`
+
+*Cross*compile*
+
+`GOOS=linux`go`build`.`
+
+* Gofmt
+
+`go`fmt`.`
+
+There's one official standard to format Go code!
+
+- Editors / IDEs often have support for doing it on save
+
+* Tests
+
+.code go-for-beginners/testing.go /START/,/END/
+
+`go`test`testing.go`
+
+* Modules
+
+Why?
+
+- Reproducible builds!
+- Manage versions of dependencies
+- Forget about `GOPATH`...
+- Stable since Go 1.13
+
+* Modules
+
+`mkdir`new-project`
+`cd`new-project`
+
+`go`mod`init`github.com/me/new-project`
+
+`go`get`github.com/bxcodec/faker`
+
+*go.mod*
+.code go-for-beginners/modules/go.mod
+
+* Resources
+
+* Learning Go
+
+.link https://tour.golang.org
+
+.link https://golang.org/doc/effective_go.html
+
+.link https://golang.org/ref/spec
+
+* Finding packages
+
+.link https://awesome-go.com
+
+.link https://godoc.org
+
+.link https://go.dev
+
+* Staying up-to-date
+
+.link https://golangweekly.com
+
+.link https://changelog.com/gotime
+
+.link https://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw JustForFunc (YouTube)
+
+* Editors / IDEs
+
+- Goland from JetBrains
+- VSCode with `Go` Extension (from Microsoft)
