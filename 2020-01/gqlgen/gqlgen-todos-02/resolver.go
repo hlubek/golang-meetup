@@ -2,6 +2,8 @@ package gqlgen_todos
 
 import (
 	"context"
+
+	"github.com/friendsofgo/errors"
 ) // THIS CODE IS A STARTING POINT ONLY. IT WILL NOT BE UPDATED WITH SCHEMA CHANGES.
 
 type Resolver struct {
@@ -24,7 +26,12 @@ func (r *Resolver) Query() QueryResolver {
 type mutationResolver struct{ *Resolver }
 
 func (r *mutationResolver) CreateTodo(ctx context.Context, input NewTodo) (*Todo, error) {
-	panic("not implemented")
+	todo, err := r.todosRepo.InsertTodo(input)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to insert todo")
+	}
+
+	return todo, nil
 }
 
 type queryResolver struct{ *Resolver }
