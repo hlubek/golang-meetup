@@ -80,3 +80,24 @@ Create `schema.graphql`
 
 .code gqlgen/generated/resolver.go /START/,/END/
 
+* Generated models
+
+.code gqlgen/generated/models_gen.go /START/,/END/
+
+* Workflow
+
+- Implement resolver methods
+- Change schema, re-run generator
+- Change / add resolver methods
+
+* Custom API models
+
+* Choosing which fields to resolve explicitly
+
+* Custom scalars
+
+* Directives
+
+* Subscriptions
+
+* Advanced architecture
