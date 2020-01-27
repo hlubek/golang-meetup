@@ -36,6 +36,16 @@ func (r *mutationResolver) CreateTodo(ctx context.Context, input NewTodo) (*Todo
 	return todo, nil
 }
 
+func (r *mutationResolver) MarkDone(ctx context.Context, todoID string) (*Result, error) {
+	todo := r.todosRepo.FindTodoByID(todoID)
+	if todo == nil {
+		return &Result{Error: strVal("todo not found")}, nil
+	}
+	todo.Done = true
+	r.todosRepo.UpdateTodo(todo)
+	return &Result{}, nil
+}
+
 type queryResolver struct{ *Resolver }
 
 func (r *queryResolver) Todos(ctx context.Context) ([]*Todo, error) {
@@ -54,4 +64,8 @@ type todoResolver struct {
 
 func (t *todoResolver) User(ctx context.Context, todo *Todo) (*User, error) {
 	return t.todosRepo.FindUserByID(todo.UserID), nil
+}
+
+func strVal(s string) *string {
+	return &s
 }

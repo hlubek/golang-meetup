@@ -45,10 +45,15 @@ type DirectiveRoot struct {
 type ComplexityRoot struct {
 	Mutation struct {
 		CreateTodo func(childComplexity int, input NewTodo) int
+		MarkDone   func(childComplexity int, todoID string) int
 	}
 
 	Query struct {
 		Todos func(childComplexity int) int
+	}
+
+	Result struct {
+		Error func(childComplexity int) int
 	}
 
 	Todo struct {
@@ -66,6 +71,7 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateTodo(ctx context.Context, input NewTodo) (*Todo, error)
+	MarkDone(ctx context.Context, todoID string) (*Result, error)
 }
 type QueryResolver interface {
 	Todos(ctx context.Context) ([]*Todo, error)
@@ -101,12 +107,31 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.CreateTodo(childComplexity, args["input"].(NewTodo)), true
 
+	case "Mutation.markDone":
+		if e.complexity.Mutation.MarkDone == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_markDone_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.MarkDone(childComplexity, args["todoId"].(string)), true
+
 	case "Query.todos":
 		if e.complexity.Query.Todos == nil {
 			break
 		}
 
 		return e.complexity.Query.Todos(childComplexity), true
+
+	case "Result.Error":
+		if e.complexity.Result.Error == nil {
+			break
+		}
+
+		return e.complexity.Result.Error(childComplexity), true
 
 	case "Todo.done":
 		if e.complexity.Todo.Done == nil {
@@ -235,6 +260,11 @@ input NewTodo {
 
 type Mutation {
   createTodo(input: NewTodo!): Todo!
+  markDone(todoId: ID!): Result!
+}
+
+type Result {
+  Error: String
 }
 `},
 )
@@ -254,6 +284,20 @@ func (ec *executionContext) field_Mutation_createTodo_args(ctx context.Context, 
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_markDone_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["todoId"]; ok {
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["todoId"] = arg0
 	return args, nil
 }
 
@@ -349,6 +393,50 @@ func (ec *executionContext) _Mutation_createTodo(ctx context.Context, field grap
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNTodo2ᚖexampleᚋgqlgenᚑtodosᚐTodo(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Mutation_markDone(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Mutation",
+		Field:    field,
+		Args:     nil,
+		IsMethod: true,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	rawArgs := field.ArgumentMap(ec.Variables)
+	args, err := ec.field_Mutation_markDone_args(ctx, rawArgs)
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	rctx.Args = args
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().MarkDone(rctx, args["todoId"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !ec.HasError(rctx) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*Result)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalNResult2ᚖexampleᚋgqlgenᚑtodosᚐResult(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -461,6 +549,40 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) _Result_Error(ctx context.Context, field graphql.CollectedField, obj *Result) (ret graphql.Marshaler) {
+	ctx = ec.Tracer.StartFieldExecution(ctx, field)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+		ec.Tracer.EndFieldExecution(ctx)
+	}()
+	rctx := &graphql.ResolverContext{
+		Object:   "Result",
+		Field:    field,
+		Args:     nil,
+		IsMethod: false,
+	}
+	ctx = graphql.WithResolverContext(ctx, rctx)
+	ctx = ec.Tracer.StartFieldResolverExecution(ctx, rctx)
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Error, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	rctx.Result = res
+	ctx = ec.Tracer.StartFieldChildExecution(ctx)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Todo_id(ctx context.Context, field graphql.CollectedField, obj *Todo) (ret graphql.Marshaler) {
@@ -1888,6 +2010,11 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				invalids++
 			}
+		case "markDone":
+			out.Values[i] = ec._Mutation_markDone(ctx, field)
+			if out.Values[i] == graphql.Null {
+				invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -1932,6 +2059,30 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			out.Values[i] = ec._Query___type(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch()
+	if invalids > 0 {
+		return graphql.Null
+	}
+	return out
+}
+
+var resultImplementors = []string{"Result"}
+
+func (ec *executionContext) _Result(ctx context.Context, sel ast.SelectionSet, obj *Result) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.RequestContext, sel, resultImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	var invalids uint32
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Result")
+		case "Error":
+			out.Values[i] = ec._Result_Error(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -2301,6 +2452,20 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 
 func (ec *executionContext) unmarshalNNewTodo2exampleᚋgqlgenᚑtodosᚐNewTodo(ctx context.Context, v interface{}) (NewTodo, error) {
 	return ec.unmarshalInputNewTodo(ctx, v)
+}
+
+func (ec *executionContext) marshalNResult2exampleᚋgqlgenᚑtodosᚐResult(ctx context.Context, sel ast.SelectionSet, v Result) graphql.Marshaler {
+	return ec._Result(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNResult2ᚖexampleᚋgqlgenᚑtodosᚐResult(ctx context.Context, sel ast.SelectionSet, v *Result) graphql.Marshaler {
+	if v == nil {
+		if !ec.HasError(graphql.GetResolverContext(ctx)) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	return ec._Result(ctx, sel, v)
 }
 
 func (ec *executionContext) unmarshalNString2string(ctx context.Context, v interface{}) (string, error) {

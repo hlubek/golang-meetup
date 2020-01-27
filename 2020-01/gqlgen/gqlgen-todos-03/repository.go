@@ -124,3 +124,26 @@ func (r *TodosRepository) InsertTodo(input NewTodo) (*Todo, error) {
 
 	return r.mapTodo(t), nil
 }
+
+func (r *TodosRepository) UpdateTodo(todo *Todo) {
+	r.mx.Lock()
+	defer r.mx.Unlock()
+
+	r.data.Todos[todo.ID] = storedTodo{
+		ID:     todo.ID,
+		Text:   todo.Text,
+		Done:   todo.Done,
+		UserID: todo.UserID,
+	}
+}
+
+func (r *TodosRepository) FindTodoByID(todoID string) *Todo {
+	r.mx.RLock()
+	defer r.mx.RUnlock()
+
+	todo, ok := r.data.Todos[todoID]
+	if !ok {
+		return nil
+	}
+	return r.mapTodo(todo)
+}

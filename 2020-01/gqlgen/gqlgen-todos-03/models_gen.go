@@ -7,6 +7,10 @@ type NewTodo struct {
 	UserID string `json:"userId"`
 }
 
+type Result struct {
+	Error *string `json:"Error"`
+}
+
 type User struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
