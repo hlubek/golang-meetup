@@ -25,5 +25,5 @@ type Mutation {
 }
 
 type Result {
-  Error: String
+  error: String
 }

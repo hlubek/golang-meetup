@@ -42,7 +42,10 @@ func (r *mutationResolver) MarkDone(ctx context.Context, todoID string) (*Result
 		return &Result{Error: strVal("todo not found")}, nil
 	}
 	todo.Done = true
-	r.todosRepo.UpdateTodo(todo)
+	err := r.todosRepo.UpdateTodo(todo)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to update todo")
+	}
 	return &Result{}, nil
 }
 

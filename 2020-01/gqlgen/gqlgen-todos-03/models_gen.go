@@ -8,7 +8,7 @@ type NewTodo struct {
 }
 
 type Result struct {
-	Error *string `json:"Error"`
+	Error *string `json:"error"`
 }
 
 type User struct {

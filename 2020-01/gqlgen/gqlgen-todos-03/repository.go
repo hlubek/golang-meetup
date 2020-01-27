@@ -106,26 +106,15 @@ func (r *TodosRepository) InsertTodo(input NewTodo) (*Todo, error) {
 
 	r.data.Todos[id] = t
 
-	_, err := r.file.Seek(0, io.SeekStart)
+	err := r.syncFile()
 	if err != nil {
-		return nil, errors.Wrap(err, "failed to seek file")
-	}
-	err = r.file.Truncate(0)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to truncate file")
-	}
-
-	enc := json.NewEncoder(r.file)
-	enc.SetIndent("", "  ")
-	err = enc.Encode(r.data)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to write data")
+		return nil, errors.Wrap(err, "failed to sync file")
 	}
 
 	return r.mapTodo(t), nil
 }
 
-func (r *TodosRepository) UpdateTodo(todo *Todo) {
+func (r *TodosRepository) UpdateTodo(todo *Todo) error {
 	r.mx.Lock()
 	defer r.mx.Unlock()
 
@@ -135,6 +124,32 @@ func (r *TodosRepository) UpdateTodo(todo *Todo) {
 		Done:   todo.Done,
 		UserID: todo.UserID,
 	}
+
+	err := r.syncFile()
+	if err != nil {
+		return errors.Wrap(err, "failed to sync file")
+	}
+
+	return nil
+}
+
+func (r *TodosRepository) syncFile() error {
+	_, err := r.file.Seek(0, io.SeekStart)
+	if err != nil {
+		return errors.Wrap(err, "failed to seek file")
+	}
+	err = r.file.Truncate(0)
+	if err != nil {
+		return errors.Wrap(err, "failed to truncate file")
+	}
+
+	enc := json.NewEncoder(r.file)
+	enc.SetIndent("", "  ")
+	err = enc.Encode(r.data)
+	if err != nil {
+		return errors.Wrap(err, "failed to write data")
+	}
+	return nil
 }
 
 func (r *TodosRepository) FindTodoByID(todoID string) *Todo {

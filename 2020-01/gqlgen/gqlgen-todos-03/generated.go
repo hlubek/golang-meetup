@@ -126,7 +126,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Todos(childComplexity), true
 
-	case "Result.Error":
+	case "Result.error":
 		if e.complexity.Result.Error == nil {
 			break
 		}
@@ -264,7 +264,7 @@ type Mutation {
 }
 
 type Result {
-  Error: String
+  error: String
 }
 `},
 )
@@ -551,7 +551,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Result_Error(ctx context.Context, field graphql.CollectedField, obj *Result) (ret graphql.Marshaler) {
+func (ec *executionContext) _Result_error(ctx context.Context, field graphql.CollectedField, obj *Result) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -2081,8 +2081,8 @@ func (ec *executionContext) _Result(ctx context.Context, sel ast.SelectionSet, o
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Result")
-		case "Error":
-			out.Values[i] = ec._Result_Error(ctx, field, obj)
+		case "error":
+			out.Values[i] = ec._Result_error(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
