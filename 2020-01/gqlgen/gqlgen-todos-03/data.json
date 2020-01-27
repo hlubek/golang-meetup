@@ -1,0 +1,28 @@
+{
+  "Todos": {
+    "751c2398-9918-4f71-8a05-0ee3af8f8ea1": {
+      "ID": "751c2398-9918-4f71-8a05-0ee3af8f8ea1",
+      "Text": "Test it",
+      "Done": false,
+      "UserID": "USER-1"
+    },
+    "TODO-1": {
+      "ID": "TODO-1",
+      "Text": "Start a new Todo app",
+      "Done": false,
+      "UserID": "USER-1"
+    },
+    "a30093e1-f84d-4c78-bdf3-ae62f613cb6f": {
+      "ID": "a30093e1-f84d-4c78-bdf3-ae62f613cb6f",
+      "Text": "Can it save?",
+      "Done": false,
+      "UserID": "USER-1"
+    }
+  },
+  "Users": {
+    "USER-1": {
+      "ID": "USER-1",
+      "Name": "Christopher"
+    }
+  }
+}
