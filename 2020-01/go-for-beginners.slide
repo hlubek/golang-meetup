@@ -122,7 +122,16 @@ recover()
 
 * Defer
 
-TODO
+.play go-for-beginners/defer_file.go /START/,/END/ HLdefer
+
+- Deferred calls run before returning from the enclosing function
+
+* Defer
+
+.play go-for-beginners/defer_stack.go /START/,/END/
+
+- `defer` calls can be stacked
+- will run in last in first out order
 
 * Types
 
@@ -329,9 +338,13 @@ Why?
 
 .link https://gobyexample.com
 
+.link https://gophercises.com/
+
 .link https://golang.org/doc/effective_go.html
 
 .link https://golang.org/ref/spec
+
+.link https://dave.cheney.net/practical-go/presentations/gophercon-singapore-2019.html
 
 * Finding packages
 
@@ -348,6 +361,8 @@ Why?
 .link https://changelog.com/gotime
 
 .link https://www.youtube.com/channel/UC_BzFbxG2za3bp5NRRRXJSw JustForFunc (YouTube)
+
+.link https://www.youtube.com/channel/UCx9QVEApa5BKLw9r8cnOFEA/playlists GopherCon (YouTube)
 
 * Editors / IDEs
 
