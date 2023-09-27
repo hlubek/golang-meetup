@@ -1,0 +1,81 @@
+Logging with log/slog
+Golang Kiel Meetup #2
+12 Oct 2023
+
+Christopher Hlubek
+networkteam GmbH
+networkteam.social/@christopher
+
+* Where are we coming from?
+
+* The standard `log` package
+
+In the standard library since the release of Go 1 in March 2012.
+
+.play -edit logging-with-slog/log/example.go
+
+Downsides:
+
+- Formatted logging, but not structured logging or levels
+
+* We have many structured logging packages
+
+- Logrus
+- Zap
+- zerolog
+- Logr
+- glog
+- go-kit/log
+- hclog
+- klog
+- ...
+
+* Logrus example
+
+.code logging-with-slog/logrus/example.go
+
+* Why a new package?
+
+- Every 3rd party package has its own API.
+- No standard API!
+- Many libraries accept / need log adapters (e.g. DB drivers).
+- It's tedious to write adapters for every package!
+
+Can we have a standard structured logging API (with high performance)?
+
+* Meet `log/slog`
+
+* About `log/slog`
+
+- Based on a discussion and proposal by Jonathan Amsterdam:
+
+.link https://go.googlesource.com/proposal/+/master/design/56345-structured-logging.md
+
+- Is in the standard library since the release of Go 1.21.
+- It captures best practices of other structured logging approaches.
+
+* Using the default logger
+
+.play logging-with-slog/slog/default-logger.go
+
+Fun fact: this will use the `log` package under the hood.
+
+* Customizing the default handler
+
+.play logging-with-slog/slog/customize-default-handler.go /START/,/END/
+
+* Add attributes
+
+.play logging-with-slog/slog/structured-key-pair.go /START/,/END/
+
+Attributes can be given as key/value pairs.
+
+* Add attributes (cont.)
+
+.play logging-with-slog/slog/structured-attr.go /START/,/END/
+
+Attributes can be given as type-safe `Attr`.
+
+* Deep dive: does it allocate?
+
+.play logging-with-slog/slog/structured-attr-alloc.go /START/,/END/
