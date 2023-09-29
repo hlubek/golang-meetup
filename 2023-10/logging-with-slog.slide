@@ -56,26 +56,71 @@ Can we have a standard structured logging API (with high performance)?
 
 * Using the default logger
 
-.play logging-with-slog/slog/default-logger.go
+.play -edit logging-with-slog/slog/default-logger.go
 
 Fun fact: this will use the `log` package under the hood.
 
 * Customizing the default handler
 
-.play logging-with-slog/slog/customize-default-handler.go /START/,/END/
+.play -edit logging-with-slog/slog/customize-default-handler.go /START/,/END/
 
 * Add attributes
 
-.play logging-with-slog/slog/structured-key-pair.go /START/,/END/
+.play -edit logging-with-slog/slog/structured-key-pair.go /START/,/END/
 
 Attributes can be given as key/value pairs.
 
 * Add attributes (cont.)
 
-.play logging-with-slog/slog/structured-attr.go /START/,/END/
+.play -edit logging-with-slog/slog/structured-attr.go /START/,/END/
 
 Attributes can be given as type-safe `Attr`.
 
+* Using LogAttrs
+
+.play -edit logging-with-slog/slog/log-attrs.go /START/,/END/
+
+You can use the full `LogAttrs` function. It is supposed to be faster / less allocating.
+
+Context can also be passed via `slog.Log`, `slog.DebugContext`, etc.
+
+* Groups
+
+Attributes can be nested in a group:
+
+.play -edit logging-with-slog/slog/log-group.go /START/,/END/
+
+It is up to the handler how a group is formatted.
+
+* Design and architecture
+
+Let's have a look at the main types:
+
+- `Logger`: the "frontend" for logging
+- `Record`: a self-contained log record object created by a Logger
+- `Handler`: the "backend" for logging, provides formatting and destination of each Record
+- `Attr`: A key-value pair that can also contain groups
+
+* Preparing a logger with `With`
+
+You can prepare a logger with attributes:
+
+.play -edit logging-with-slog/slog/log-with.go /START/,/END/
+
+* Levels
+
+TODO
+
+* Handlers
+
+TODO
+
+* Bonus level
+
 * Deep dive: does it allocate?
 
-.play logging-with-slog/slog/structured-attr-alloc.go /START/,/END/
+.play -edit logging-with-slog/slog/structured-attr-alloc.go /START/,/END/
+
+* Deep dive: which is fastest?
+
+.play -edit logging-with-slog/slog/structured-attr-bench.go /START/,/END/

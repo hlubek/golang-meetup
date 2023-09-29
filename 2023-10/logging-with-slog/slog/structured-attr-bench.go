@@ -15,11 +15,11 @@ func main() {
 	logger := slog.New(handler)
 	slog.SetDefault(logger)
 
-	// START OMIT
 	fns := []func(b *testing.B){
+		// START OMIT
 		func(b *testing.B) {
 			for i := 0; i < b.N; i++ {
-				logger.Info("hello", "count", 3)
+				logger.Info("hello", "count")
 			}
 		},
 		func(b *testing.B) {
@@ -42,11 +42,11 @@ func main() {
 				slog.LogAttrs(nil, slog.LevelError, "oops", slog.Any("err", net.ErrClosed), slog.Int("status", 500))
 			}
 		},
+		// END OMIT
 	}
 
 	for i, fn := range fns {
 		result := testing.Benchmark(fn)
 		fmt.Printf("%d: alloc/ops=%d ns/op=%d\n", i, result.AllocsPerOp(), result.NsPerOp())
 	}
-	// END OMIT
 }
