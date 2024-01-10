@@ -1,0 +1,106 @@
+# context.Context
+Golang Kiel Meetup #3
+11 Jan 2024
+
+Sören Rohweder
+FLS GmbH
+
+## What Problem to solve ?
+
+Passing down data through the execution chain of a request
+
+Request Flow
+
+.image request-flow.png
+
+## Enrich the context
+
+    ctx := context.Background()
+
+    newCtx := Context.WithValue(ctx, loggingKey, "RequestID: myCurrentRequestID"))
+
+.image request-flow-with-data.png
+
+## Enrich the context 2
+
+.play -numbers code/context-with-value.go  /START OMIT/,/END OMIT/
+
+## Context is read only (in lower layers)
+
+- After creation the context can only be read
+- Adding values implies creating a new context with additional information
+- If a new context is passed only the information in the new context is available
+
+## Abort the context chain
+
+    func Process(ctx context.Context) error {
+        ctx = context.Background()
+        Processfurther(ctx) // receives a new Context with now information from the parent context
+    }
+
+## How to get the context
+
+Pass down context as func argument
+
+    func DoWork(ctx context.Context) error {
+        _ = ctx
+    }
+
+## What happens if we share the context
+
+Adding a context to a struct and creating a shared context does blur the boundaries of the context
+
+    type Handler struct {
+        ctx context.Context
+    }
+
+    func (h *Handler) DoWork() error {
+        _ = h.ctx
+    }
+
+Multiple calls to DoWork access the same context, preventing usage of dedicated deadlines for each call of the function
+
+: By passing down the context it is clear that it is only valid in this function call
+: making a shared context does allow to cancel all parallel running functions
+
+## How to leverage the cost of the additional argument
+
+Executing code with remote system, being this databases, external services, http APIs etc.
+
+.play -numbers code/context-with-timeout.go /START OMIT/,/END OMIT/
+
+## Real World example for TimeoutUsage
+
+    func WatchTaskProgress(ctx context.Context, repository Repository, taskID string, taskStatusInterval int, receiver taskProgressUpdater) error {
+        for {
+            select {
+            case <-ctx.Done():
+                return ctx.Err()
+            default:
+                taskStatus, err := repository.GetTaskStatus(taskID)
+                receiver(ctx, taskStatus, err)
+
+                if taskStatus.Lifecycle == "SUCCESS" {
+                    return nil
+                }
+                if taskStatus.Lifecycle == "IN_PROGRESS" || taskStatus.Lifecycle == "CREATED" {
+                    time.Sleep(time.Duration(taskStatusInterval) * time.Second)
+                } else {
+                    return errors.Wrap(err, "task is in unexpected state")
+                }
+            }
+        }
+    }
+
+## Usage in integration test
+
+From an integration test running the code against a real database
+Looks the same like production code only with different timings
+
+    ctx, cancel := context.WithTimeout(context.Background(), 120*time.Second)
+	defer cancel()
+
+	err = WatchTaskProgress(ctx, repository, taskID, 5, testReceiverFunc)
+	assert.NoError(t, err)
+
+    ... further assertions against the database
