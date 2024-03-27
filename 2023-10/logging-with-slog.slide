@@ -109,11 +109,66 @@ You can prepare a logger with attributes:
 
 * Levels
 
-TODO
+* Predefined log evels
+
+There's a `Level` type (`int`) with the following levels:
+
+- `LevelDebug` (-4)
+- `LevelInfo` (0)
+- `LevelWarn` (4)
+- `LevelError` (8)
+
+This gives some space for custom levels!
+
+The actual level is given as a `Leveler` to a handler.
+
+* Setting a fixed level
+
+.play -edit logging-with-slog/slog/levels-fixed.go /START/,/END/
+
+What happens if we log to a non-existing level?
+
+* Checking if a level is enabled
+
+.play -edit logging-with-slog/slog/levels-enabled.go /START/,/END/
+
+* Using a dynamic level
+
+It can be helpful to change the level of a running application:
+
+.play -edit logging-with-slog/slog/levels-dynamic.go /START/,/END/
 
 * Handlers
 
-TODO
+* What is a Handler?
+
+- Processes a log `Record`
+- Typically writes to a destination
+- Performs formatting
+
+* Existing handlers
+
+`slog.TextHandler`
+
+`slog.JSONHandler`
+
+https://github.com/lmittmann/tint
+
+.image logging-with-slog//slog/handler_tint_screenshot.png _ 800
+
+https://github.com/networkteam/slogutils CLIHandler
+
+.image logging-with-slog//slog/handler_cli_screenshot.png _ 800
+
+* Handler options
+
+Each handler defines its own options. Most support `Level` and `ReplaceAttr`.
+
+* Adding custom log levels
+
+.play -edit logging-with-slog/slog/levels-custom.go /START/,/END/
+
+(From https://betterstack.com/community/guides/logging/logging-in-go/#customizing-log-levels)
 
 * Bonus level
 
