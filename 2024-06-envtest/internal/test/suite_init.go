@@ -3,11 +3,14 @@ package test
 import (
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
 	"k8s.io/client-go/kubernetes"
+	"k8s.io/kubectl/pkg/scheme"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -20,6 +23,20 @@ func SetupLoggerAndAssetPath() {
 		Expect(os.Setenv("KUBEBUILDER_ASSETS", assetPath)).To(Succeed())
 	}
 	//Expect(os.Setenv("KUBEBUILDER_ATTACH_CONTROL_PLANE_OUTPUT", "true")).To(Succeed())
+}
+
+func InitializeTestEnvWithCRDs() *envtest.Environment {
+	By("bootstrapping test environment")
+	err := argocdv1.AddToScheme(scheme.Scheme)
+	Expect(err).NotTo(HaveOccurred())
+	testEnv := &envtest.Environment{
+
+		Scheme:                scheme.Scheme,
+		ErrorIfCRDPathMissing: true,
+		CRDDirectoryPaths:     []string{filepath.Join("..", "..", "external", "cert-manager", "crds")},
+	}
+
+	return testEnv
 }
 
 func InitializeClientSet(testEnv *envtest.Environment) *kubernetes.Clientset {

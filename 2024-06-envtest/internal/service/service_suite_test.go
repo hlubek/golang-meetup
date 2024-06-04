@@ -29,8 +29,7 @@ func TestService(t *testing.T) {
 var _ = BeforeSuite(func() {
 	test.SetupLoggerAndAssetPath()
 
-	testEnv = &envtest.Environment{}
-	testEnv.Start()
+	testEnv = test.InitializeTestEnvWithCRDs()
 
 	clientSet = test.InitializeClientSet(testEnv)
 })
