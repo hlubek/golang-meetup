@@ -9,6 +9,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	certmanagerv1 "github.com/cert-manager/cert-manager/pkg/api"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/kubectl/pkg/scheme"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
@@ -22,12 +23,12 @@ func SetupLoggerAndAssetPath() {
 		logf.Log.Info(fmt.Sprintf("KUBEBUILDER_ASSETS is not set, setting it to %s", assetPath))
 		Expect(os.Setenv("KUBEBUILDER_ASSETS", assetPath)).To(Succeed())
 	}
-	//Expect(os.Setenv("KUBEBUILDER_ATTACH_CONTROL_PLANE_OUTPUT", "true")).To(Succeed())
+	Expect(os.Setenv("KUBEBUILDER_ATTACH_CONTROL_PLANE_OUTPUT", "true")).To(Succeed())
 }
 
 func InitializeTestEnvWithCRDs() *envtest.Environment {
 	By("bootstrapping test environment")
-	err := argocdv1.AddToScheme(scheme.Scheme)
+	err := certmanagerv1.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 	testEnv := &envtest.Environment{
 

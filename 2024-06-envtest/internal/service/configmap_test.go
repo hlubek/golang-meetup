@@ -15,11 +15,6 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-var (
-	configMapService *service.ConfigMapService
-	ctx              context.Context
-	testingNamespace string = "default"
-)
 var _ = Describe("ApplicationCreator", func() {
 
 	BeforeEach(func() {

@@ -1,3 +1,0 @@
----
-# Source: cert-manager/templates/crds/crd-challenges.yaml
-# Taken from https://raw.githubusercontent.com/cert-manager/cert-manager/v1.13.3/deploy/crds/crd-challenges.yaml
