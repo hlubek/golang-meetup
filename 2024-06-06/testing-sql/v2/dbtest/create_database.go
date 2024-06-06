@@ -19,6 +19,7 @@ import (
 
 const (
 	dbPort = 5432
+	// The database needs to be created (once) before running the tests.
 	dbName = "dbtest-test"
 )
 
