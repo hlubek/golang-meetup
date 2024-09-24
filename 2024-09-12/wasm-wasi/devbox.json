@@ -1,0 +1,33 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.22",
+    "wabt@latest",
+    "caddy@latest",
+    "wasmtime@latest",
+    "wasmedge@latest",
+    "tinygo@latest"
+  ],
+  "shell": {
+    "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],
+    "scripts": {
+      "server": ["caddy file-server -l ':2024'"],
+      "build-scenario1": [
+        "cd scenario1",
+        "GOOS=wasip1 GOARCH=wasm go build -o main.wasm main.go"
+      ],
+      "build-scenario1-0": [
+        "cd scenario1-0",
+        "GOOS=wasip1 GOARCH=wasm go build -o main.wasm main.go"
+      ],
+      "build-scenario1-1": [
+        "cd scenario1-1",
+        "GOOS=wasip1 GOARCH=wasm go build -o main.wasm main.go"
+      ],
+      "build-scenario1-2": [
+        "cd scenario1-2",
+        "GOOS=wasip1 GOARCH=wasm go build -o main.wasm main.go"
+      ]
+    }
+  }
+}

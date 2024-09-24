@@ -1,0 +1,261 @@
+WASM and WASI with Go
+Golang Kiel Meetup #2
+12 Sep 2024
+
+Christopher Hlubek
+networkteam GmbH
+networkteam.social/@christopher
+
+* What is WASM?
+
+> WebAssembly [...] is a *safe*, *portable*, *low-level* *code* *format* designed for *efficient* *execution* and *compact* *representation*. Its main goal is to enable high performance applications on the Web, but it does not make any Web-specific assumptions or provide Web-specific features, so it can be employed in other environments as well.
+
+* Design Goals
+
+- *Fast*: executes with near native code performance, taking advantage of capabilities common to all contemporary hardware.
+- *Safe*: code is validated and executes in a memory-safe, sandboxed environment preventing data corruption or security breaches.
+- *Well-defined*: fully and precisely defines valid programs and their behavior in a way that is easy to reason about informally and formally.
+- *Hardware-independent*: can be compiled on all modern architectures, desktop or mobile devices and embedded systems alike.
+- *Language-independent*: does not privilege any particular language, programming model, or object model.
+- *Platform-independent*: can be embedded in browsers, run as a stand-alone VM, or integrated in other environments.
+- *Open*: programs can interoperate with their environment in a simple and universal manner.
+
+* WASM in text representation (WAT)
+
+hello-world.wat
+
+.code wasm-wasi/hello-world.wat
+
+  wat2wasm hello-world.wat -o hello-world.wasm
+
+hello-world.js
+
+.code wasm-wasi/hello-world.js
+
+* Interacting with WASM
+
+- Call host (e.g. browser) functions from WASM via _explicit_ imports
+- Host can call WASM functions via exports
+- WASM has a linear memory model
+
+WebAssembly’s sandboxed nature requires a host to mediate communication with the outside world.
+
+* In the browser, cool
+
+.link https://webvm.io/
+
+* What is WASI?
+
+> The WebAssembly System Interface (WASI) is a group of *standard* *API* *specifications* for software compiled to Wasm. WASI is designed to provide a secure standard interface for applications that can be compiled to Wasm from any language, and that may *run* *anywhere*—*from* *browsers* to *clouds* to *embedded* *devices*.
+
+* State of WASI
+
+- Preview 1 is generally supported
+- Preview 2 is released and stabilized
+
+* WebAssembly Component Model
+
+> The WebAssembly Component Model is a broad-reaching architecture for building interoperable Wasm libraries, applications, and environments.
+
+* WHY?
+
+.image wasm-wasi/wasm-why.png 500 _
+
+* Universal computational runtime
+
+- Runs anywhere with near native performance
+- WebAssembly Components allow to interact with the outside world
+- Interaction with reusable APIs for infrastructure
+
+* A better serverless?
+
+- Very fast cold start time
+- Better isolation and security
+
+* Real-world uses right now
+
+* Azure WASI node pools in AKS
+
+.image wasm-wasi/img/screen-Azure-WASM.png 1024 _
+
+* Fastly Compute
+
+.link https://www.fastly.com/documentation/solutions/examples/go/
+
+.image wasm-wasi/img/screen-Fastly-Compute.png 1024 _
+
+* Fermyon
+
+.image wasm-wasi/img/screen-Fermyon.png 1024 _
+
+* WasmCloud
+
+.image wasm-wasi/img/screen-wasmCloud.png 1024 _
+
+* WasmCloud
+
+.image wasm-wasi/img/screen-wasmCloud-2.png 1024 _
+
+* Creating plugins for sqlc
+
+.image wasm-wasi/img/screen-sqlc-plugin.png 1024 _
+
+* Extism
+
+.link https://extism.org/
+
+* How can we use it with Go?
+
+* Scenario 1: Compile pure Go to WASM + WASI
+
+Compile it:
+
+  GOOS=wasip1 GOARCH=wasm go build -o main.wasm main.go
+
+What did we get?
+
+  $ ls -lh
+  -rwxr-xr-x 1 hlubek 2.1M Sep 10 14:38 main.wasm
+
+Run it with wasmtime:
+
+  $ wasmtime main.wasm
+  Hello world!
+
+* Can we just run it?
+
+Run it with `go run`:
+
+  $ GOOS=wasip1 GOARCH=wasm go run ./scenario1/main.go
+  Hello world!
+
+* What is supported with wasip1?
+
+.link https://go.dev/blog/wasi
+
+> [...] You can expect almost all the features of Go to just work with wasip1.
+
+* Can we access the filesystem?
+
+.code wasm-wasi/scenario1-0/main.go
+
+* ... checking runtimes
+
+Wasmtime
+
+  $ wasmtime scenario1-0/main.wasm
+  panic: open /: Bad file number
+
+  goroutine 1 [running]:
+  main.main()
+    /Users/hlubek/Dev/Work/networkteam/golang-meetup/2024-09-12/wasm-wasi/scenario1-0/main.go:9 +0x1d
+
+
+Wasmtime
+
+  $ wasmtime --dir=./scenario1-0::/ scenario1-0/main.wasm
+  - main.go
+  - main.wasm
+  main.wasm: 1873246 bytes
+
+WasmEdge
+
+  $ wasmedge --dir /:./scenario1-0/ scenario1-0/main.wasm
+  - main.go
+  - main.wasm
+  main.wasm: 1873246 bytes
+
+* Can we run a Go HTTP server in WASM + WASI?
+
+> A notable missing feature in the wasip1 API is a full implementation of network sockets. wasip1 only defines functions that operate on already opened sockets, making it impossible to support some of the most popular features of the Go standard library, such as HTTP servers.
+
+.link https://github.com/dispatchrun/net
+
+> This library provides net.Dial and net.Listen functions for GOOS=wasip1.
+
+So we need to use a runtime extension.
+
+* ... the server code
+
+.code wasm-wasi/scenario1-1/main.go
+
+* ... running the server
+
+  $ wasmedge scenario1-1/main.wasm
+  2024/09/12 09:59:37 http: superfluous response.WriteHeader call from main.main.func1 (main.go:18)
+
+✅ Check
+
+* Can we fetch a HTTP service?
+
+.code wasm-wasi/scenario1-2/main.go
+
+Using the stealthrocket package with extensions for WasmEdge.
+
+* ... running the fetch
+
+  $ wasmedge scenario1-2/main.wasm
+  panic: Get "http://example.com": dial example.com:80 example.com:80: lookup example.com on [::1]:53: Connection refused
+
+Huh? Why is lookup using a local DNS server?
+
+* ... figuring out the DNS issue
+
+github.com/dispatchrun/net/wasip1/lookup_wasip1.go
+
+  //go:build wasip1 && !getaddrinfo
+  // ...
+  ipAddrs, err := net.DefaultResolver.LookupIPAddr(ctx, hostname)
+
+github.com/dispatchrun/net/wasip1/lookup_wasip1_getaddrinfo.go
+
+  //go:build wasip1 && getaddrinfo
+  // ...
+  n, err := getaddrinfo(hostname, service, &hints, results)
+
+github.com/dispatchrun/net/wasip1/syscall_wasmedge_wasip1.go
+
+  //go:wasmimport wasi_snapshot_preview1 sock_getaddrinfo
+  //go:noescape
+  func sock_getaddrinfo(
+    node unsafe.Pointer,
+    nodeLen uint32,
+    // ...
+  ) syscall.Errno
+
+* ... solving out the DNS issue
+
+Solution 1
+
+  $ GOOS=wasip1 GOARCH=wasm go build -tags getaddrinfo -o scenario1-2/main.wasm scenario1-2/main.go
+  <!doctype html>
+
+Adds tag to use (non-standard) getaddrinfo extension.
+
+Solution 2
+
+  $ mkdir -p scenario1-2/etc/resolv.conf
+  $ echo "nameserver 8.8.8.8" >> scenario1-2/etc/resolv.conf
+  $ wasmedge --dir /:./scenario1-2/ scenario1-2/main.wasm
+  <!doctype html>
+
+Use a custom resolv.conf file and mount in the runtime.
+
+* Supporting WASI Preview 2 with TinyGo
+
+
+* Interop for HTTP fetch
+
+.link https://github.com/vasilev/HTTP-request-from-inside-WASM
+
+* Outlook
+
+* WASI preview 2 will come to Go
+
+.link https://github.com/golang/go/issues/65333#issuecomment-2233660279
+
+When?
+
+* Runnin WASM and WASI is possible today
+
+- With some limitations

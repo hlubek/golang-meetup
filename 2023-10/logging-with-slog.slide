@@ -109,7 +109,7 @@ You can prepare a logger with attributes:
 
 * Levels
 
-* Predefined log evels
+* Predefined log levels
 
 There's a `Level` type (`int`) with the following levels:
 
