@@ -1,0 +1,156 @@
+# Go Iterators
+Golang Kiel Meetup #6
+12 Dec 2024
+
+Christopher Hlubek
+networkteam GmbH
+networkteam.social/@christopher
+
+## What is an iterator?
+
+- A design pattern
+- Setup a data source
+- Iterate over the data and provide items
+- Perform a cleanup
+
+
+## Previous APIs
+
+`bufio.Scanner`
+
+```go
+scanner := bufio.NewScanner(reader)
+for scanner.Scan() {
+    line := scanner.Text()
+    // Process line
+}
+```
+
+`sql.DB`
+
+```go
+rows, err := db.Query("SELECT * FROM users")
+defer rows.Close()
+for rows.Next() {
+    var user User
+    err := rows.Scan(&user.ID, &user.Name)
+    // Process user
+}
+```
+
+
+## Go iterators
+
+*Or range over func*
+
+This is what the stdlib declares in Go 1.23:
+
+```go
+package iter
+
+type Seq[V any] func(yield func(V) bool)
+
+type Seq2[K, V any] func(yield func(K, V) bool)
+```
+
+
+## A most basic example
+
+.play -edit simple.go
+
+
+## Using yield correctly (1)
+
+`yield` is just a convention - there's no special meaning.
+
+.play -edit yield.go
+
+
+## Using yield correctly (2)
+
+If `yield` returns `false`, the iterator must stop and not *yield* again.
+
+.play -edit yield-ok.go
+
+
+## Example: Fibonacci
+
+.play -edit fib.go /START OMIT/,/END OMIT/
+
+
+## Example: Set
+
+.play -edit set.go /START OMIT/,/END OMIT/
+
+
+## Is it fast?
+
+	for item := range s.All() {
+		// ...
+	}
+
+vs.
+
+	for item := range s.m {
+		sum += item
+	}
+
+Benchmark
+
+    ❯ go test -bench=. -benchmem set_test.go
+    goos: darwin
+    goarch: arm64
+    cpu: Apple M3 Max
+    BenchmarkRangeOverFunc-14 	15857458	   132.0 ns/op	  50 B/op	  0 allocs/op
+    BenchmarkWithoutIter-14   	17398510	   125.6 ns/op	  46 B/op	  0 allocs/op
+    PASS
+    ok  	command-line-arguments	4.617s
+
+**TL;DR** Yes! Also it doesn't allocate.
+
+## How does it work?
+
+> There’s a fair bit of complexity in the Go compiler and runtime to make this efficient, and to correctly handle things like break or panic in the loop. We’re not going to cover any of that in this blog post. Fortunately the implementation details are not important when it comes to actually using this feature.
+
+
+## New stdlib
+
+## Package `slices`
+
+- `All([]E) iter.Seq2[int, E]`
+- `Values([]E) iter.Seq[E]`
+- `Collect(iter.Seq[E]) []E`
+- `AppendSeq([]E, iter.Seq[E]) []E`
+- `Backward([]E) iter.Seq2[int, E]`
+- `Sorted(iter.Seq[E]) []E`
+- `SortedFunc(iter.Seq[E], func(E, E) int) []E`
+- `SortedStableFunc(iter.Seq[E], func(E, E) int) []E`
+- `Repeat([]E, int) []E`
+- `Chunk([]E, int) iter.Seq([]E)`
+
+
+## Package `maps`
+
+- `All(map[K]V) iter.Seq2[K, V]`
+- `Keys(map[K]V) iter.Seq[K]`
+- `Values(map[K]V) iter.Seq[V]`
+- `Collect(iter.Seq2[K, V]) map[K, V]`
+- `Insert(map[K, V], iter.Seq2[K, V])`
+
+
+## Push vs. pull
+
+- Push: `yield` provides items
+- Pull: you can get items on-demand from one or more iterators
+
+`iter.Pull[V any](seq Seq[V])`
+
+
+## Pull example: merge sorted sequences
+
+.play -edit merge-sorted.go /START OMIT/,/END OMIT/
+
+
+## More information
+
+.link https://go.dev/blog/range-functions
