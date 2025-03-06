@@ -1,0 +1,159 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "resolved": "github:NixOS/nixpkgs/02032da4af073d0f6110540c8677f16d4be0117f?lastModified=1741037377&narHash=sha256-SvtvVKHaUX4Owb%2BPasySwZsoc5VUeTf1px34BByiOxw%3D"
+    },
+    "glib.dev": {
+      "resolved": "github:NixOS/nixpkgs/02032da4af073d0f6110540c8677f16d4be0117f?narHash=sha256-SvtvVKHaUX4Owb%2BPasySwZsoc5VUeTf1px34BByiOxw%3D#glib.dev",
+      "source": "nixpkg",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "dev",
+              "path": "/nix/store/xxm1si4lrh7yvv8rmysylj7djfxhqqp4-glib-2.82.4-dev",
+              "default": true
+            }
+          ]
+        }
+      }
+    },
+    "go@1.24": {
+      "last_modified": "2025-02-12T00:10:52Z",
+      "resolved": "github:NixOS/nixpkgs/83a2581c81ff5b06f7c1a4e7cc736a455dfcf7b4#go_1_24",
+      "source": "devbox-search",
+      "version": "1.24.0",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/qldcnifalkvyah0wnv7m4zb854yd9l88-go-1.24.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/qldcnifalkvyah0wnv7m4zb854yd9l88-go-1.24.0"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rrxgml7w4pfmibjbspkdvrw8vd2vnarb-go-1.24.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rrxgml7w4pfmibjbspkdvrw8vd2vnarb-go-1.24.0"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7imv22pl4qrjwvi6jzlfb305rc2min45-go-1.24.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7imv22pl4qrjwvi6jzlfb305rc2min45-go-1.24.0"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vh5d5bj1sljdhdypy80x1ydx2jx6rv2q-go-1.24.0",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vh5d5bj1sljdhdypy80x1ydx2jx6rv2q-go-1.24.0"
+        }
+      }
+    },
+    "pkg-config": {
+      "resolved": "github:NixOS/nixpkgs/02032da4af073d0f6110540c8677f16d4be0117f?narHash=sha256-SvtvVKHaUX4Owb%2BPasySwZsoc5VUeTf1px34BByiOxw%3D#pkg-config",
+      "source": "nixpkg",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "man",
+              "path": "/nix/store/4y6yff0yrh93j8lipg88bdqhararqnwp-pkg-config-wrapper-0.29.2-man",
+              "default": true
+            },
+            {
+              "path": "/nix/store/x1wigzf0ag4ll8aalq7ka05r93ai6isx-pkg-config-wrapper-0.29.2",
+              "default": true
+            }
+          ]
+        }
+      }
+    },
+    "valkey@latest": {
+      "last_modified": "2025-02-07T11:26:36Z",
+      "plugin_version": "0.0.1",
+      "resolved": "github:NixOS/nixpkgs/d98abf5cf5914e5e4e9d57205e3af55ca90ffc1d#valkey",
+      "source": "devbox-search",
+      "version": "8.0.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/y4jvh5nz4mfxgbxkyzz734g52s1vssrb-valkey-8.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/y4jvh5nz4mfxgbxkyzz734g52s1vssrb-valkey-8.0.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/r3ml6233a5gz75kl7fkqlrdx1kb41a0r-valkey-8.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/r3ml6233a5gz75kl7fkqlrdx1kb41a0r-valkey-8.0.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4gsyc6spbk2c5rgq74lkf9ghil5a0rqf-valkey-8.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4gsyc6spbk2c5rgq74lkf9ghil5a0rqf-valkey-8.0.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1i73ygjixgfq2cn4jsd76jwii9v5ydgi-valkey-8.0.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1i73ygjixgfq2cn4jsd76jwii9v5ydgi-valkey-8.0.2"
+        }
+      }
+    },
+    "vips": {
+      "resolved": "github:NixOS/nixpkgs/02032da4af073d0f6110540c8677f16d4be0117f?narHash=sha256-SvtvVKHaUX4Owb%2BPasySwZsoc5VUeTf1px34BByiOxw%3D#vips",
+      "source": "nixpkg",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "man",
+              "path": "/nix/store/a6lyphy3gf5y5nkmq3idgnfjqhbh22l7-vips-8.16.0-man",
+              "default": true
+            },
+            {
+              "name": "bin",
+              "path": "/nix/store/hnfgbqlhzp2nx60lziglwfdyymg17s1s-vips-8.16.0-bin",
+              "default": true
+            }
+          ]
+        }
+      }
+    }
+  }
+}
