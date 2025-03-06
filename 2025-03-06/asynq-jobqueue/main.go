@@ -30,12 +30,11 @@ func main() {
 					asynq.RedisClientOpt{Addr: redisAddr},
 					asynq.Config{
 						// Specify how many concurrent workers to use
-						Concurrency: 4,
+						Concurrency: 2,
 						// Optionally specify multiple queues with different priority.
 						Queues: map[string]int{
 							"medium": 5,
 						},
-						// See the godoc for other configuration options
 					},
 				)
 

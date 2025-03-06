@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/cshum/imagor"
 	"github.com/cshum/imagor/imagorpath"
@@ -15,7 +16,6 @@ import (
 	"github.com/hibiken/asynq"
 )
 
-// A list of task types.
 const (
 	TypeImageResize = "image:resize"
 )
@@ -27,11 +27,6 @@ type ImageResizePayload struct {
 	Height     int
 }
 
-//----------------------------------------------
-// Write a function NewXXXTask to create a task.
-// A task consists of a type and a payload.
-//----------------------------------------------
-
 func NewImageResizeTask(src, targetPath string, width, height int) (*asynq.Task, error) {
 	payload, err := json.Marshal(ImageResizePayload{
 		SourceURL:  src,
@@ -42,17 +37,8 @@ func NewImageResizeTask(src, targetPath string, width, height int) (*asynq.Task,
 	if err != nil {
 		return nil, err
 	}
-	// task options can be passed to NewTask, which can be overridden at enqueue time.
 	return asynq.NewTask(TypeImageResize, payload, asynq.MaxRetry(5)), nil
 }
-
-//---------------------------------------------------------------
-// Write a function HandleXXXTask to handle the input task.
-// Note that it satisfies the asynq.HandlerFunc interface.
-//
-// Handler doesn't need to be a function. You can define a type
-// that satisfies asynq.Handler interface. See examples below.
-//---------------------------------------------------------------
 
 // ImageProcessor implements asynq.Handler interface.
 type ImageProcessor struct {
@@ -79,10 +65,17 @@ func (p *ImageProcessor) Shutdown(ctx context.Context) error {
 }
 
 func (p *ImageProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
+	// Decode payload from JSON
+
 	var payload ImageResizePayload
 	if err := json.Unmarshal(t.Payload(), &payload); err != nil {
 		return fmt.Errorf("decoding payload: %v: %w", err, asynq.SkipRetry)
 	}
+
+	// Do the actual image processing
+
+	start := time.Now()
+
 	slog.Debug("Resizing image", "src", payload.SourceURL)
 
 	blob, err := p.img.Serve(ctx, imagorpath.Params{
@@ -98,6 +91,9 @@ func (p *ImageProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
 	if err != nil {
 		return fmt.Errorf("resizing with imagor: %w", err)
 	}
+
+	// Write result to target path
+
 	reader, _, err := blob.NewReader()
 	if err != nil {
 		return fmt.Errorf("getting reader: %w", err)
@@ -112,7 +108,7 @@ func (p *ImageProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
 		return fmt.Errorf("copying file: %w", err)
 	}
 
-	slog.Info("Resized image", "src", payload.SourceURL, "target", payload.TargetPath)
+	slog.Info("Resized image", "src", payload.SourceURL, "target", payload.TargetPath, "duration", time.Since(start))
 
 	return nil
 }
