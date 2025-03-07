@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"time"
 
 	"github.com/hibiken/asynq"
 	"github.com/urfave/cli/v2"
 )
 
 func main() {
+	slog.SetLogLoggerLevel(slog.LevelDebug)
+
 	app := cli.NewApp()
 	app.Name = "asynq-jobqueue"
 	app.Usage = "A job queue example for image resizing with asynq"
@@ -35,6 +38,7 @@ func main() {
 						Queues: map[string]int{
 							"medium": 5,
 						},
+						ShutdownTimeout: 10 * time.Second,
 					},
 				)
 
